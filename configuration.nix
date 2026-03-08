@@ -7,6 +7,38 @@ isMaximal: {
   config.vim = {
     viAlias = true;
     vimAlias = true;
+    keymaps = [
+      {
+        key = "<leader>e";
+        mode = "n";
+        silent = true;
+        action = ":Neotree toggle<CR>";
+        desc = "Toggle Neo-tree file explorer";
+      }
+      {
+        key = "<leader>m";
+        mode = "n";
+        silent = true;
+        action = ":make<CR>";
+      }
+      {
+        key = "<leader>l";
+        mode = ["n" "x"];
+        silent = true;
+        action = "<cmd>cnext<CR>";
+      }
+      {
+        key = "<leader>k";
+        mode = ["n" "x"];
+        lua = true;
+        action = ''
+          function()
+            require('foo').do_thing()
+            print('did thing')
+          end
+        '';
+      }
+    ];
     debugMode = {
       enable = false;
       level = 16;
