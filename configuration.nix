@@ -169,7 +169,7 @@ isMaximal: {
     theme = {
       enable = true;
       name = "oxocarbon";
-      # style = "mocha";
+      style = "dark";
       transparent = false;
     };
 
