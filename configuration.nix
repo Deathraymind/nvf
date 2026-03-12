@@ -7,17 +7,6 @@ isMaximal: {
   config.vim = {
     viAlias = true;
     vimAlias = true;
-    terminal = {
-      toggleterm = {
-        enable = true;
-        lazygit = {
-          enable = true;
-          mappings = {
-            open = "<leader>lg"; # This sets space+lg (since <leader> defaults to space)
-          };
-        };
-      };
-    };
     keymaps = [
       {
         key = "<leader>e";
@@ -173,14 +162,14 @@ isMaximal: {
     statusline = {
       lualine = {
         enable = true;
-        theme = "catppuccin";
+        theme = "oxocarbon";
       };
     };
 
     theme = {
       enable = true;
-      name = "catppuccin";
-      style = "mocha";
+      name = "oxocarbon";
+      # style = "mocha";
       transparent = false;
     };
 
