@@ -179,16 +179,16 @@ isMaximal: {
     statusline = {
       lualine = {
         enable = true;
-        theme = "gruvbox";
+        theme = "auto";
       };
     };
 
-    theme = {
-      enable = true;
-      name = "gruvbox";
-      style = "dark";
-      transparent = true;
-    };
+  # theme = {
+  #    enable = true;
+  #    name = "gruvbox";
+  #    style = "dark";
+  #    transparent = true;
+  #  };
 
     autopairs.nvim-autopairs.enable = true;
 
