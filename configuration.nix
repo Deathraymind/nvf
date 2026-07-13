@@ -183,12 +183,11 @@ isMaximal: {
       };
     };
 
-  # theme = {
-  #    enable = true;
-  #    name = "gruvbox";
-  #    style = "dark";
-  #    transparent = true;
-  #  };
+  theme = {
+      enable = true;
+      name = "base-16";
+      transparent = true;
+    };
 
     autopairs.nvim-autopairs.enable = true;
 
