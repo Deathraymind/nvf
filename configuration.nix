@@ -187,7 +187,7 @@ isMaximal: {
       enable = true;
       name = "gruvbox";
       style = "dark";
-      transparent = false;
+      transparent = true;
     };
 
     autopairs.nvim-autopairs.enable = true;
