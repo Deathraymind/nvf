@@ -45,6 +45,9 @@ isMaximal: {
       logFile = "/tmp/nvim.log";
     };
 
+    # vim.opts and vim.options are aliased
+    opts.expandtab = true;
+
     spellcheck = {
       enable = true;
       programmingWordlist.enable = isMaximal;
@@ -63,7 +66,7 @@ isMaximal: {
       lspSignature.enable = !isMaximal; # conflicts with blink in maximal
       otter-nvim.enable = isMaximal;
       nvim-docs-view.enable = isMaximal;
-      harper-ls.enable = isMaximal;
+      presets.harper.enable = isMaximal;
     };
 
     debugger = {
@@ -89,12 +92,13 @@ isMaximal: {
       clang.enable = isMaximal;
       cmake.enable = isMaximal;
       css.enable = isMaximal;
+      scss.enable = isMaximal;
       html.enable = isMaximal;
       json.enable = isMaximal;
       sql.enable = isMaximal;
       java.enable = isMaximal;
       kotlin.enable = isMaximal;
-      ts.enable = isMaximal;
+      typescript.enable = isMaximal;
       go.enable = isMaximal;
       lua.enable = isMaximal;
       zig.enable = isMaximal;
@@ -102,12 +106,18 @@ isMaximal: {
       typst.enable = isMaximal;
       rust = {
         enable = isMaximal;
+        # Can only be enabled if lsp.enable = false
+        extensions.rustaceanvim.enable = false;
         extensions.crates-nvim.enable = isMaximal;
       };
       toml.enable = isMaximal;
       xml.enable = isMaximal;
+      tex.enable = isMaximal;
+      docker.enable = isMaximal;
+      env.enable = isMaximal;
 
       # Language modules that are not as common.
+      openscad.enable = false;
       arduino.enable = false;
       assembly.enable = false;
       astro.enable = false;
@@ -130,15 +140,22 @@ isMaximal: {
       make.enable = false;
       qml.enable = false;
       jinja.enable = false;
-      tailwind.enable = false;
       svelte.enable = false;
+      vue.enable = false;
+      tsx.enable = false;
+      liquid.enable = false;
       tera.enable = false;
       twig.enable = false;
+      gettext.enable = false;
       fluent.enable = false;
+      jq.enable = false;
+      fish.enable = false;
+      standard-ml.enable = false;
+      pug.enable = false;
 
       # Nim LSP is broken on Darwin and therefore
       # should be disabled by default. Users may still enable
-      # `vim.languages.vim` to enable it, this does not restrict
+      # `vim.languages.nim` to enable it, this does not restrict
       # that.
       # See: <https://github.com/PMunch/nimlsp/issues/178#issue-2128106096>
       nim.enable = false;
@@ -259,7 +276,6 @@ isMaximal: {
     notes = {
       neorg.enable = false;
       orgmode.enable = false;
-      mind-nvim.enable = isMaximal;
       todo-comments.enable = true;
     };
 

@@ -4,75 +4,76 @@
   lib,
   ...
 }: let
-  inherit (builtins) attrNames;
-  inherit (lib.options) mkEnableOption mkOption;
+  inherit (lib.options) mkEnableOption mkOption literalExpression;
   inherit (lib.modules) mkIf mkMerge;
-  inherit (lib.meta) getExe;
+  inherit (lib) genAttrs;
   inherit (lib.types) listOf enum;
-  inherit (lib.nvim.types) mkGrammarOption diagnostics;
-  inherit (lib.nvim.attrsets) mapListToAttrs;
+  inherit (lib.nvim.types) mkGrammarOption;
 
   cfg = config.vim.languages.twig;
 
   defaultServers = ["twig-language-server"];
-  servers = {
-    twig-language-server = {
-      enable = true;
-      cmd = [(getExe pkgs.twig-language-server) "--stdio"];
-      filetypes = ["twig"];
-      root_markers = [".git"];
-    };
-  };
+  servers = ["twig-language-server" "emmet-ls" "stimulus-language-server"];
 
   defaultFormat = ["djlint"];
-  formats = {
-    djlint = {
-      command = getExe pkgs.djlint;
-    };
-    # TODO: if twig-cs-fixer gets packaged for nix, add it and default to it.
-  };
+  formats = ["djlint"];
+
   defaultDiagnosticsProvider = ["djlint"];
-  diagnosticsProviders = {
-    djlint = {
-      config = {
-        cmd = getExe pkgs.djlint;
-      };
-    };
-    # TODO: if curlylint gets packaged for nix, add it.
-  };
+  # TODO: if curlylint gets packaged for nix, add it.
+  diagnosticsProviders = ["djlint"];
 in {
   options.vim.languages.twig = {
     enable = mkEnableOption "Twig templating language support";
 
     treesitter = {
-      enable = mkEnableOption "Twig treesitter" // {default = config.vim.languages.enableTreesitter;};
+      enable =
+        mkEnableOption "Twig treesitter"
+        // {
+          default = config.vim.languages.enableTreesitter;
+          defaultText = literalExpression "config.vim.languages.enableTreesitter";
+        };
       package = mkGrammarOption pkgs "twig";
     };
 
     lsp = {
-      enable = mkEnableOption "Twig LSP support" // {default = config.vim.lsp.enable;};
+      enable =
+        mkEnableOption "Twig LSP support"
+        // {
+          default = config.vim.lsp.enable;
+          defaultText = literalExpression "config.vim.lsp.enable";
+        };
       servers = mkOption {
-        type = listOf (enum (attrNames servers));
+        type = listOf (enum servers);
         default = defaultServers;
         description = "Twig LSP server to use";
       };
     };
 
     format = {
-      enable = mkEnableOption "PHP formatting" // {default = config.vim.languages.enableFormat;};
+      enable =
+        mkEnableOption "PHP formatting"
+        // {
+          default = config.vim.languages.enableFormat;
+          defaultText = literalExpression "config.vim.languages.enableFormat";
+        };
       type = mkOption {
         description = "Twig formatter to use";
-        type = listOf (enum (attrNames formats));
+        type = listOf (enum formats);
         default = defaultFormat;
       };
     };
 
     extraDiagnostics = {
-      enable = mkEnableOption "extra Twig diagnostics" // {default = config.vim.languages.enableExtraDiagnostics;};
-      types = diagnostics {
-        langDesc = "Twig";
-        inherit diagnosticsProviders;
-        inherit defaultDiagnosticsProvider;
+      enable =
+        mkEnableOption "extra Twig diagnostics via nvim-lint"
+        // {
+          default = config.vim.languages.enableExtraDiagnostics;
+          defaultText = literalExpression "config.vim.languages.enableExtraDiagnostics";
+        };
+      types = mkOption {
+        type = listOf (enum diagnosticsProviders);
+        default = defaultDiagnosticsProvider;
+        description = "extra Twig diagnostics providers";
       };
     };
   };
@@ -84,36 +85,29 @@ in {
     })
 
     (mkIf cfg.lsp.enable {
-      vim.lsp.servers =
-        mapListToAttrs (n: {
-          name = n;
-          value = servers.${n};
-        })
-        cfg.lsp.servers;
+      vim.lsp = {
+        presets = genAttrs cfg.lsp.servers (_: {enable = true;});
+        servers = genAttrs cfg.lsp.servers (_: {
+          filetypes = ["twig"];
+        });
+      };
     })
 
     (mkIf cfg.format.enable {
       vim.formatter.conform-nvim = {
         enable = true;
-        setupOpts = {
-          formatters_by_ft.twig = cfg.format.type;
-          formatters =
-            mapListToAttrs (name: {
-              inherit name;
-              value = formats.${name};
-            })
-            cfg.format.type;
-        };
+        presets = genAttrs cfg.format.type (_: {enable = true;});
+        setupOpts.formatters_by_ft.twig = cfg.format.type;
       };
     })
 
     (mkIf cfg.extraDiagnostics.enable {
-      vim.diagnostics.nvim-lint = {
-        enable = true;
-        linters_by_ft.twig = cfg.extraDiagnostics.types;
-        linters =
-          mkMerge (map (name: {${name} = diagnosticsProviders.${name}.config;})
-            cfg.extraDiagnostics.types);
+      vim.diagnostics = {
+        presets = genAttrs cfg.extraDiagnostics.types (_: {enable = true;});
+        nvim-lint = {
+          enable = true;
+          linters_by_ft.twig = cfg.extraDiagnostics.types;
+        };
       };
     })
   ]);

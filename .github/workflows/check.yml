@@ -17,8 +17,8 @@ jobs:
     if: "!contains(github.event.pull_request.title, '[skip ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
-      - uses: cachix/install-nix-action@v31.10.0
+        uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31.10.7
         with:
           nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
@@ -34,10 +34,10 @@ jobs:
     if: "!contains(github.event.pull_request.title, '[skip ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v31.10.0
+        uses: cachix/install-nix-action@v31.10.7
         with:
           nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
@@ -64,7 +64,7 @@ jobs:
     if: "!contains(github.event.pull_request.title, '[skip ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Check for typos
         uses: crate-ci/typos@master
@@ -92,15 +92,15 @@ jobs:
           - docs-json
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
-      - uses: cachix/install-nix-action@v31.10.0
+        uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31.10.7
         with:
           nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
             substituters = https://cache.nixos.org/ https://feel-co.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= feel-co.cachix.org-1:nwEFNnwZvtl4KKSH5LDg+/+K7bV0vcs6faMHAJ6xx0w=
 
-      - uses: cachix/cachix-action@v16
+      - uses: cachix/cachix-action@v17
         with:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
@@ -127,16 +127,15 @@ jobs:
   flake-docs-linkcheck:
     name: "Validate hyperlinks in documentation sources"
     runs-on: ubuntu-latest
-    if: false # disabled until we fix ndg docs
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
-      - uses: cachix/install-nix-action@v31.10.0
+        uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31.10.7
         with:
           nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
-            substituters = https://cache.nixos.org/ https://feel-co.cachix.org
-            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= feel-co.cachix.org-1:nwEFNnwZvtl4KKSH5LDg+/+K7bV0vcs6faMHAJ6xx0w=
+            substituters = https://cache.nixos.org/ https://feel-co.cachix.org https://nvf.cachix.org
+            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= feel-co.cachix.org-1:nwEFNnwZvtl4KKSH5LDg+/+K7bV0vcs6faMHAJ6xx0w= nvf.cachix.org-1:GMQWiUhZ6ux9D5CvFFMwnc2nFrUHTeGaXRlVBXo+naI=
 
       - name: Build linkcheck package
         run: nix build .#docs-linkcheck -Lv
@@ -147,7 +146,7 @@ jobs:
     if: "!contains(github.event.pull_request.title, '[skip ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2 # slows down checkout, but we need to compare against the previous commit on push events
 
@@ -169,7 +168,7 @@ jobs:
           cat "$HOME/changed_files"
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v31.10.0
+        uses: cachix/install-nix-action@v31.10.7
         with:
           nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
