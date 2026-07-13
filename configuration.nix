@@ -162,13 +162,13 @@ isMaximal: {
     statusline = {
       lualine = {
         enable = true;
-        theme = "oxocarbon";
+        theme = "gruvbox";
       };
     };
 
     theme = {
       enable = true;
-      name = "oxocarbon";
+      name = "gruvbox";
       style = "dark";
       transparent = false;
     };
